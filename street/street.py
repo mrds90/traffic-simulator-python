@@ -1,4 +1,5 @@
 from methods import versor_from_two_points
+import random
 
 
 class Street:
@@ -17,8 +18,9 @@ class Street:
                 self.__begining=begining
                 self.__end=end
                 self.__lanes=lanes
-                self.__yDir=tuple(self.__y_vector())
-                self.__xDir=tuple(self.__x_vector())
+                self.__yDir=tuple(versor_from_two_points(self.__begining,self.__end))
+                self.__xDir=tuple([self.__yDir[1],-1*self.__yDir[0]])
+                self.__maxSpeedLimit=10*random.randint(3,9)
         except ValueError:
             print ('posiciones ingresadas incorrectamente')
             
@@ -38,14 +40,15 @@ class Street:
     @property
     def id(self):
         return self.__streetID
-    
-    #metodos
-    def __y_vector(self):
-        return(versor_from_two_points(self.__begining,self.__end))
-
-    def __x_vector(self):
-        return [self.__yDir[1],-1*self.__yDir[0]]# x2=-y1 y2=x1
-
+    @property
+    def begining(self):
+        return self.__begining
+    @property
+    def end(self):
+        return self.__end
+    @property
+    def maxSpeedLimit(self):
+        return self.__maxSpeedLimit
 
           
     

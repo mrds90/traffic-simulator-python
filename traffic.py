@@ -1,21 +1,16 @@
 from vehicle import Vehicle
 from street import Street
 import methods
-
-carTest=Vehicle(60,1,4)
-streetTest= Street(1,(1,3),(5,8),4)
-
-print(streetTest.lanes)
-print(carTest.lane)
-
-print(carTest.streetPercent)
-
-
-print(carTest.initial_direction(streetTest.yDir))
-print(carTest.initial_position((1,3),(5,8)))
+from land import Land
+import random
 
 
 
+land1=Land(1000,1500,8)
+for x in range(8):
+    print(land1.streetList[x].begining)
 
+a=land1.streetList[x].maxSpeedLimit
+print(a)
 
-
+carTest=Vehicle(random.randint(0,len(land1.streetList)),land1)
