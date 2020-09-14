@@ -1,6 +1,13 @@
-from vehicle import Car
+from vehicle import Vehicle
+from street import Street
 
-carTest=Car(60)
-print(carTest.speed)
+carTest=Vehicle(60)
+streetTest= Street((1,3),(5,8),5.5)
+print(streetTest.width)
+
+
+
+
+
 
 
