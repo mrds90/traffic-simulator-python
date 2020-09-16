@@ -13,11 +13,16 @@ class SingletonMeta(type):
 
 class Land(metaclass=SingletonMeta):
     def __init__(self, width, height,streetQuantity):
-        self.__vertex=((0,0),(width,0),(width,height),(0,height))
+        self.__size=(width,height)
         self.__streetList=[]
+        streetWidht=int(self.size[0]*0.03)
         for x in range(streetQuantity):
-            self.__streetList.append(Street(x,(random.randint(0,width),(random.randint(0,height))),(random.randint(0,width),(random.randint(0,height))),(random.randint(1,4))))
+            self.__streetList.append(Street(x,(random.randint(0,width),(random.randint(0,height))),(random.randint(0,width),(random.randint(0,height))),(random.randint(1,4)),streetWidht))
     
     @property
     def streetList(self):
         return self.__streetList
+    @property
+    def size(self):
+        return self.__size
+    
