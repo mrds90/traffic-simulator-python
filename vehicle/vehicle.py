@@ -36,9 +36,15 @@ class Vehicle(pygame.sprite.Sprite):
         self.__position=self.__position+(a+desp)*land.streetList[streetID].widht*0.8*array(self.__xDirection)
         #print("desplazo: ",(a+desp)*land.streetList[streetID].widht*0.8)                        
         angle=angle_between_vector(self.__yDirection,(0,1))
-        self.__carImage=pygame.transform.rotate(self.__carImage,angle)
+        self.__carImage=pygame.transform.rotate(self.__carImage,90)
+        self.__carImage=pygame.transform.rotate(self.__carImage,-1*angle)
         self.__rect=self.__carImage.get_rect()
-        self.__rect.center= tuple(self.position)
+        
+        print(self.__position)
+        print(self.position)
+        
+
+        self.__rect.center= self.position
         #self.__rect.center = self.__position
         #print('posición :',self.__position)
         #print('carImage :',self.__carImage)

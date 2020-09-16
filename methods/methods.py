@@ -18,8 +18,12 @@ def angle_between_vector(v1,v2):
     v2=a_versor(v2)
     vAux=[v1[1],-v1[0]]
     sign=numpy.dot(v2,vAux)
-    sign=sign/numpy.abs(sign)
-    ang=(numpy.arcsin(numpy.dot(v1,v2))*sign)*180/numpy.pi
+    if sign !=0:
+        sign=sign/numpy.abs(sign)
+    else:
+        sign=1  
+    
+    ang=(numpy.arccos(numpy.dot(v1,v2))*sign)*180/numpy.pi
     return ang
 
 def scale_rect(scale,sizeToModify,referenceSize,horzontalOrVertical):

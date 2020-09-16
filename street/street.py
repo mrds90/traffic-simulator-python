@@ -36,6 +36,11 @@ class Street (pygame.sprite.Sprite):
     @property
     def lanes(self):
         return self.__lanes
+
+    @lanes.setter
+    def lanes(self,lanes):
+        self.__lanes=lanes
+
     @property
     def widht(self):
         return self.__widht
@@ -54,6 +59,12 @@ class Street (pygame.sprite.Sprite):
     @property
     def end(self):
         return self.__end
+    @end.setter
+    def end(self,valor):
+        self.__end=valor
+        self.__yDir=tuple(versor_from_two_points(self.__begining,self.__end))
+        self.__xDir=tuple([self.__yDir[1],-1*self.__yDir[0]])
+
     @property
     def maxSpeedLimit(self):
         return self.__maxSpeedLimit

@@ -12,12 +12,19 @@ class SingletonMeta(type):
         return cls._instances[cls]
 
 class Land(metaclass=SingletonMeta):
-    def __init__(self, width, height,streetQuantity):
+    def __init__(self, width, height):
         self.__size=(width,height)
-        self.__streetList=[]
-        streetWidht=int(self.size[0]*0.03)
-        for x in range(streetQuantity):
-            self.__streetList.append(Street(x,(random.randint(0,width),(random.randint(0,height))),(random.randint(0,width),(random.randint(0,height))),(random.randint(1,4)),streetWidht))
+        self.__streetList:Street=[]
+        self.__streetWidht=int(self.size[0]*0.03)
+        
+    
+    def append(self,positionOne,PositionTwo,clickOne,lanes:int):
+        if clickOne==True:
+            self.__streetList.append(Street(len(self.__streetList)-1,positionOne,PositionTwo,lanes,self.__streetWidht))
+        elif clickOne==False:
+            self.__streetList[len(self.__streetList)-1].end=PositionTwo
+            self.__streetList[len(self.__streetList)-1].lanes=lanes
+        #print(len(self.__streetList)-1)
     
     @property
     def streetList(self):
@@ -25,4 +32,6 @@ class Land(metaclass=SingletonMeta):
     @property
     def size(self):
         return self.__size
+
+    
     
