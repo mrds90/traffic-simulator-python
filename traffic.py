@@ -20,8 +20,8 @@ class Traffic:
     def intersections(self)      :
         self.__land.intersect_point()
 
-    def streetAppend(self,positionOne,PositionTwo,clickOne,lanes:int):
-        self.__land.append(positionOne,PositionTwo,clickOne,lanes)
+    def streetAppend(self,positionOne,positionTwo,clickOne,lanes:int):
+        self.__land.append(positionOne,positionTwo,clickOne,lanes)
 
     @property
     def vehicleList(self):

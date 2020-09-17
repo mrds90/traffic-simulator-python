@@ -1,7 +1,7 @@
 # singletonImplement
 
 import random
-from methods import getIntersectPoint
+from methods import *
 from street import Street
 
 class SingletonMeta(type):
@@ -20,11 +20,21 @@ class Land(metaclass=SingletonMeta):
         self.__intercetion:list=[]
         
     
-    def append(self,positionOne,PositionTwo,clickOne,lanes:int):
+    def append(self,positionOne,positionTwo,clickOne,lanes:int):
+        if positionOne==positionTwo:
+            
+            positionTwo=tuple(array(positionTwo)+[1,1])
+
         if clickOne==True:
-            self.__streetList.append(Street(len(self.__streetList)-1,positionOne,PositionTwo,lanes,self.__streetWidht))
+            print(positionOne,positionTwo)
+            self.__streetList.append(Street(len(self.__streetList)-1,positionOne,positionTwo,lanes,self.__streetWidht))
         elif clickOne==False:
-            self.__streetList[len(self.__streetList)-1].end=PositionTwo
+            for x in range(len(self.__streetList)):
+                for y in range(x+1,len(self.__streetList)):
+                    if len(self.__streetList)>1:
+                        positionTwo=predictIntersectPoint(self.__streetList[x].begining,self.__streetList[x].end,positionOne,positionTwo)
+                        
+            self.__streetList[len(self.__streetList)-1].end=positionTwo
             self.__streetList[len(self.__streetList)-1].lanes=lanes
         #print(len(self.__streetList)-1)
     
