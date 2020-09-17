@@ -20,7 +20,7 @@ class Land(metaclass=SingletonMeta):
         self.__intercetion:list=[]
         
     
-    def append(self,positionOne,positionTwo,clickOne,lanes:int):
+    def append(self,positionOne,positionTwo,clickOne,lanes:int,predict):
         if positionOne==positionTwo:
             
             positionTwo=tuple(array(positionTwo)+[1,1])
@@ -29,10 +29,11 @@ class Land(metaclass=SingletonMeta):
             print(positionOne,positionTwo)
             self.__streetList.append(Street(len(self.__streetList)-1,positionOne,positionTwo,lanes,self.__streetWidht))
         elif clickOne==False:
-            for x in range(len(self.__streetList)):
-                for y in range(x+1,len(self.__streetList)):
-                    if len(self.__streetList)>1:
-                        positionTwo=predictIntersectPoint(self.__streetList[x].begining,self.__streetList[x].end,positionOne,positionTwo)
+            if predict==True:
+                for x in range(len(self.__streetList)):
+                    for y in range(x+1,len(self.__streetList)):
+                        if len(self.__streetList)>1:
+                            positionTwo=predictIntersectPoint(self.__streetList[x].begining,self.__streetList[x].end,positionOne,positionTwo)
                         
             self.__streetList[len(self.__streetList)-1].end=positionTwo
             self.__streetList[len(self.__streetList)-1].lanes=lanes

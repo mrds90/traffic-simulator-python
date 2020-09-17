@@ -20,8 +20,8 @@ class Traffic:
     def intersections(self)      :
         self.__land.intersect_point()
 
-    def streetAppend(self,positionOne,positionTwo,clickOne,lanes:int):
-        self.__land.append(positionOne,positionTwo,clickOne,lanes)
+    def streetAppend(self,positionOne,positionTwo,clickOne,lanes:int,predict):
+        self.__land.append(positionOne,positionTwo,clickOne,lanes,predict)
 
     @property
     def vehicleList(self):
@@ -50,6 +50,7 @@ click=False
 lanes=1
 clickNumber=-1
 currentStreet=False
+predict=True
 while True:
     window.fill((30,180,40))#recibe tupla con RGB
     #Control de eventos
@@ -65,6 +66,11 @@ while True:
                 if evento.key==pygame.K_w:
                     if clickNumber==1:
                         lanes+=1
+            if evento.key==pygame.K_e:
+                    predict=False
+        if evento.type==KEYUP:
+            if evento.key==pygame.K_e:
+                predict=True
         if cars==False:
             if evento.type==pygame.MOUSEBUTTONDOWN:
                 click=True
@@ -77,7 +83,7 @@ while True:
             
     pos2=pygame.mouse.get_pos()
     if clickNumber==1 :
-        traffic.streetAppend(pos1,pos2,click,lanes)
+        traffic.streetAppend(pos1,pos2,click,lanes,predict)
         click=False
     if cars==True:
         traffic.vehicleAppend(3)
