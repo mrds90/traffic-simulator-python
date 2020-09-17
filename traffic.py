@@ -16,7 +16,9 @@ class Traffic:
     def vehicleAppend(self,vehicle):
         for y in range(vehicle):
             self.__vehicle.append((Vehicle(random.randint(0,len(self.__land.streetList)-1),self.__land)))
-            
+
+    def intersections(self)      :
+        self.__land.intersect_point()
 
     def streetAppend(self,positionOne,PositionTwo,clickOne,lanes:int):
         self.__land.append(positionOne,PositionTwo,clickOne,lanes)
@@ -49,7 +51,7 @@ lanes=1
 clickNumber=-1
 currentStreet=False
 while True:
-    window.fill((255,255,255))#recibe tupla con RGB
+    window.fill((30,180,40))#recibe tupla con RGB
     #Control de eventos
     for evento in pygame.event.get():
         if evento.type==QUIT: #¿es el evento de apretar la cruz?
@@ -57,10 +59,10 @@ while True:
             sys.exit() #y cerrar ventana
         if evento.type==KEYDOWN:
             if cars==False:
-                if evento.key==pygame.K_ESCAPE:
+                if evento.key==pygame.K_q and clickNumber==-1:
                     print('car will be placed')
                     cars=True
-                if evento.key==pygame.K_u:
+                if evento.key==pygame.K_w:
                     if clickNumber==1:
                         lanes+=1
         if cars==False:
@@ -80,6 +82,7 @@ while True:
     if cars==True:
         traffic.vehicleAppend(3)
         cars=False
+        traffic.intersections()
 
 
     for street in traffic.streetList:
