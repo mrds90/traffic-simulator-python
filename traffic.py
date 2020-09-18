@@ -12,7 +12,7 @@ class Traffic:
     def __init__(self,width, height):
         self.__land=Land(width,height)
         self.__vehicle:list=[]
-        
+        #self.b=0
     
     def vehicleAppend(self,vehicle):
         for y in range(vehicle):
@@ -20,6 +20,15 @@ class Traffic:
 
     def intersections(self)      :
         self.__land.intersect_point()
+        """
+        a=len(self.__land.intercetion)
+        if a>self.b:
+            print('lista')
+            for x in self.__land.intercetion:
+                print(x)
+            self.b=a
+        """  
+        
 
     def streetAppend(self,positionOne,positionTwo,clickOne,lanes:int):
         self.__land.append(positionOne,positionTwo,clickOne,lanes)
@@ -52,8 +61,8 @@ class Traffic:
             b=[]
             c=[]
             match=False
-            for x in self.__land.intercetion[0:len(self.streetList)-1]:
-                a=pointOnACircle(x,mousePosition,20)
+            for x in self.__land.intercetion:
+                a=pointOnACircle(x,mousePosition,25)
                 
                 if a!=None:
                     

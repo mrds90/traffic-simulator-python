@@ -36,9 +36,11 @@ while True:
         if cars==False:
             if evento.type==pygame.MOUSEBUTTONDOWN:
                 click=True
-                pos1=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
-                pos1=traffic.magnetStreetLimits(pos1,clickNumber)
-                pos1=traffic.magnetStreetIntercetion(pos1)
+                pos1=pygame.mouse.get_pos()
+                if predict==True:
+                    pos1=traffic.magnetStreet(pos1,clickNumber)
+                    pos1=traffic.magnetStreetLimits(pos1,clickNumber)
+                    pos1=traffic.magnetStreetIntercetion(pos1)
                 clickNumber=clickNumber*-1
                 if clickNumber==-1:
                     lanes=1
@@ -57,13 +59,13 @@ while True:
         traffic.streetAppend(pos1,pos2,click,lanes)
         click=False
     
-    traffic.intersections()    
+    traffic.intersections()
+
     if cars==True:
         traffic.vehicleAppend(3)
         cars=False
         
 
-    
     
 
     for street in traffic.streetList:
