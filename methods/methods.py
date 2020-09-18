@@ -46,6 +46,7 @@ def rot_center (image,angle):
 def cross (v,w):
     return (v[0]*w[1]-v[1]*w[0])
 def getIntersectPoint(p,endOne,q,endTwo):
+# https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
     p=array(p)
     endOne=array(endOne)
     q=array(q)
@@ -54,13 +55,15 @@ def getIntersectPoint(p,endOne,q,endTwo):
     r=endOne-p
     s=endTwo-q
     
-    t=cross((q-p),s)/cross(r,s)
-    u=cross((q-p),r)/cross(r,s)
+
     
     if cross(r,s)==0 and cross((q-p),r)==0:
         return None
-    if cross(r,s)==0 and cross((q-p),r)!=0:
+    elif cross(r,s)==0 and cross((q-p),r)!=0:
         return None
+    else:
+        t=cross((q-p),s)/cross(r,s)
+        u=cross((q-p),r)/cross(r,s)
     if cross(r,s)!=0 and t>=0 and t<=1 and u>=0 and u<=1:
         return list(p+t*r)
     return None
@@ -115,6 +118,17 @@ def circle_and_segment_intercection(start,end,center,radius):
     else:
         return None
     
+
+def pointOnACircle (point,center,radius):
+    
+    point=array(point)
+    center=array(center)
+
+    if module(point-center)<=radius:
+        return tuple(point)
+    else:
+        return None
+
 
 
 

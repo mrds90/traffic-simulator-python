@@ -31,7 +31,7 @@ class Traffic:
         c=[]
         match=False
         for x in self.streetList[0:len(self.streetList)-1-clickNumber]:
-            a=circle_and_segment_intercection(x.begining,x.end,mousePosition,60)
+            a=circle_and_segment_intercection(x.begining,x.end,mousePosition,30)
             
             if a!=None:
                 
@@ -45,7 +45,53 @@ class Traffic:
         else:
             return mousePosition
         print('devuelvo None')    
-            
+
+    def magnetStreetIntercetion(self,mousePosition):
+        #if len(self.__land.intercetion)>0:
+
+            b=[]
+            c=[]
+            match=False
+            for x in self.__land.intercetion[0:len(self.streetList)-1]:
+                a=pointOnACircle(x,mousePosition,20)
+                
+                if a!=None:
+                    
+                    b.append(a)
+                    c.append(float(module(array(a)-array(mousePosition))))
+                    match=True
+                
+            if match==True:
+                a=b[c.index(min(c))]  
+                return a
+            return mousePosition
+    
+    def magnetStreetLimits(self,mousePosition,clickNumber):
+        if clickNumber==1:
+            clickNumber=0
+        b=[]
+        c=[]
+        match=False
+        for x in self.streetList[0:len(self.streetList)-1-clickNumber]:
+            a=pointOnACircle(x.begining,mousePosition,30)
+            a1=pointOnACircle(x.end,mousePosition,30)
+            if a!=None:
+                
+                b.append(a)
+                c.append(float(module(array(a)-array(mousePosition))))
+                match=True
+            if a1!=None:
+                b.append(a1)
+                c.append(float(module(array(a1)-array(mousePosition))))
+                match=True
+
+        if match==True:
+            a=b[c.index(min(c))]  
+            return a
+        else:
+            return mousePosition
+        print('devuelvo None') 
+
 
     @property
     def vehicleList(self):
@@ -63,68 +109,3 @@ class Traffic:
 #print('posición de auto: ',traffic.vehicleList[0].position)
 
 
-traffic=Traffic(800,600)
-pygame.init() # inicializar pygame (OBLIGATORIO) para usar los recursos de pygame
-windowsSize=(traffic.size)
-window=pygame.display.set_mode(windowsSize) #seteo ventana
-pygame.display.set_caption("Traffic Simulator") #nombre de ventana
-
-cars=False
-click=False
-lanes=1
-clickNumber=-1
-currentStreet=False
-predict=True
-while True:
-    window.fill((30,180,40))#recibe tupla con RGB
-    #Control de eventos
-    for evento in pygame.event.get():
-        if evento.type==QUIT: #¿es el evento de apretar la cruz?
-            pygame.quit() #Si==>cerrar los procesos de pygame
-            sys.exit() #y cerrar ventana
-        if evento.type==KEYDOWN:
-            if cars==False:
-                if evento.key==pygame.K_q and clickNumber==-1:
-                    print('car will be placed')
-                    cars=True
-                if evento.key==pygame.K_w:
-                    if clickNumber==1:
-                        lanes+=1
-            if evento.key==pygame.K_e:
-                    predict=False
-        if evento.type==KEYUP:
-            if evento.key==pygame.K_e:
-                predict=True
-        if cars==False:
-            if evento.type==pygame.MOUSEBUTTONDOWN:
-                click=True
-                pos1=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
-                clickNumber=clickNumber*-1
-                if clickNumber==-1:
-                    lanes=1
-                  
-                    
-    if predict == True:
-        pos2=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
-    else:
-        pos2=pygame.mouse.get_pos()
-    if clickNumber==1 :
-        print('la posición dos vale: ' ,pos2)
-        traffic.streetAppend(pos1,pos2,click,lanes)
-        click=False
-    
-        
-    if cars==True:
-        traffic.vehicleAppend(3)
-        cars=False
-        traffic.intersections()
-
-    
-    
-
-    for street in traffic.streetList:
-        street.draw(window)
-    for car in traffic.vehicleList:
-        car.draw(window)
-    #Actualizar contenido de ventana
-    pygame.display.update()

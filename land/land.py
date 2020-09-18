@@ -46,7 +46,7 @@ class Land(metaclass=SingletonMeta):
                 a=getIntersectPoint(self.__streetList[x].begining,self.__streetList[x].end,self.__streetList[y].begining,self.__streetList[y].end)
                 if a!=None:
                     self.__intercetion.append(a)
-                    print ('intersección: ',self.__intercetion[len(self.__intercetion)-1])
+                    #print ('intersecciself.__intercetionón: ',self.__intercetion[len(self.__intercetion)-1])
                 # eliminar NONES de la list
 
 
@@ -56,6 +56,7 @@ class Land(metaclass=SingletonMeta):
     @property
     def size(self):
         return self.__size
-
-    
+    @property
+    def intercetion(self):
+        return self.__intercetion
     
