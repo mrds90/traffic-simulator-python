@@ -1,11 +1,12 @@
 from __future__ import division
 from numpy import array
+from numpy import dot
 import pygame
 import numpy
 import math
 from pygame import Rect
 def module(vector):
-    return math.sqrt(sum(pow(vector,2)))
+    return math.sqrt(dot(vector,vector))
 
 def versor_from_two_points(pointOne,pointTwo):
     y=array(pointTwo)-array(pointOne)
@@ -88,3 +89,44 @@ def predictIntersectPoint(p,endOne,q,endTwo):
         else:
             return tuple(endTwo)
     return tuple(endTwo)
+
+
+
+
+def circle_and_segment_intercection(start,end,center,radius):
+    
+    start=array(start)
+    end=array(end)
+    center=array(center)
+    
+    hypotenuse=center-start
+
+    segment=end-start
+    segment=a_versor(segment)
+    side=(hypotenuse[0]*segment[0]+hypotenuse[1]*segment[1])
+    
+    D=start+segment*side
+    dist=module(D-center)
+    
+ 
+
+    if abs(dist)<=radius:
+        return tuple(start+a_versor(segment)*side)
+    else:
+        return None
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

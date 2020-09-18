@@ -1,7 +1,8 @@
 from vehicle import Vehicle
 from street import Street
-import methods
+from methods import *
 from land import Land
+from numpy import array
 import random
 import pygame, sys
 from pygame.locals import *
@@ -20,8 +21,31 @@ class Traffic:
     def intersections(self)      :
         self.__land.intersect_point()
 
-    def streetAppend(self,positionOne,positionTwo,clickOne,lanes:int,predict):
-        self.__land.append(positionOne,positionTwo,clickOne,lanes,predict)
+    def streetAppend(self,positionOne,positionTwo,clickOne,lanes:int):
+        self.__land.append(positionOne,positionTwo,clickOne,lanes)
+
+    def magnetStreet(self,mousePosition,clickNumber):
+        if clickNumber==1:
+            clickNumber=0
+        b=[]
+        c=[]
+        match=False
+        for x in self.streetList[0:len(self.streetList)-1-clickNumber]:
+            a=circle_and_segment_intercection(x.begining,x.end,mousePosition,60)
+            
+            if a!=None:
+                
+                b.append(a)
+                c.append(float(module(array(a)-array(mousePosition))))
+                match=True
+            
+        if match==True:
+            a=b[c.index(min(c))]  
+            return a
+        else:
+            return mousePosition
+        print('devuelvo None')    
+            
 
     @property
     def vehicleList(self):
@@ -74,22 +98,29 @@ while True:
         if cars==False:
             if evento.type==pygame.MOUSEBUTTONDOWN:
                 click=True
-                pos1=pygame.mouse.get_pos()
+                pos1=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
                 clickNumber=clickNumber*-1
                 if clickNumber==-1:
                     lanes=1
                   
                     
-            
-    pos2=pygame.mouse.get_pos()
+    if predict == True:
+        pos2=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
+    else:
+        pos2=pygame.mouse.get_pos()
     if clickNumber==1 :
-        traffic.streetAppend(pos1,pos2,click,lanes,predict)
+        print('la posición dos vale: ' ,pos2)
+        traffic.streetAppend(pos1,pos2,click,lanes)
         click=False
+    
+        
     if cars==True:
         traffic.vehicleAppend(3)
         cars=False
         traffic.intersections()
 
+    
+    
 
     for street in traffic.streetList:
         street.draw(window)
