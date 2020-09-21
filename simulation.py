@@ -12,6 +12,7 @@ lanes=1
 clickNumber=-1
 currentStreet=False
 predict=True
+predictBorderCoincidence=False
 pygame.Rect(0,0,10,10)
 while True:
     window.fill((30,180,40))#recibe tupla con RGB
@@ -30,9 +31,13 @@ while True:
                         lanes+=1
             if evento.key==pygame.K_e:
                     predict=False
+            if evento.key==pygame.K_a:
+                    predictBorderCoincidence=True
         if evento.type==KEYUP:
             if evento.key==pygame.K_e:
                 predict=True
+            if evento.key==pygame.K_a:
+                    predictBorderCoincidence=False
         if cars==False:
             if evento.type==pygame.MOUSEBUTTONDOWN:
                 click=True
@@ -40,6 +45,8 @@ while True:
                 if predict==True:
                     pos1=traffic.magnetStreet(pos1,clickNumber)
                     pos1=traffic.magnetStreetLimits(pos1,clickNumber)
+                    if predictBorderCoincidence==True:
+                        pos1=traffic.magnetHorizontalAndVertical(pos1,clickNumber)
                     pos1=traffic.magnetStreetIntercetion(pos1)
                 clickNumber=clickNumber*-1
                 if clickNumber==-1:
@@ -51,6 +58,8 @@ while True:
     if predict == True:
         pos2=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
         pos2=traffic.magnetStreetLimits(pos2,clickNumber)
+        if predictBorderCoincidence==True:
+                        pos2=traffic.magnetHorizontalAndVertical(pos2,clickNumber)
         pos2=traffic.magnetStreetIntercetion(pos2)
     else:
         pos2=pygame.mouse.get_pos()
@@ -75,6 +84,8 @@ while True:
     if predict==True:
         aux=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
         aux=traffic.magnetStreetLimits(aux,clickNumber)
+        if predictBorderCoincidence==True:
+                        aux=traffic.magnetHorizontalAndVertical(aux,clickNumber)
         aux=traffic.magnetStreetIntercetion(aux)
         aux1=int(aux[0])
         aux2=int(aux[1])

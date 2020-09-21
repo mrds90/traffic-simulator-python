@@ -101,6 +101,50 @@ class Traffic:
             return mousePosition
         print('devuelvo None') 
 
+    def magnetHorizontalAndVertical(self,mousePosition,clickNumber):
+        if clickNumber==1:
+            clickNumber=0
+        b=[]
+        c=[]
+        d=[]
+        e=[]
+        matchHorizontal=False
+        matchVertical=False
+        for x in self.streetList[0:len(self.streetList)-1-clickNumber]:
+            horizontal=pointOnACircle((x.begining[0],mousePosition[1]),mousePosition,30)
+            horizontal1=pointOnACircle((x.end[0],mousePosition[1]),mousePosition,30)
+            vertical=pointOnACircle((mousePosition[0],x.begining[1]),mousePosition,30)
+            vertical1=pointOnACircle((mousePosition[0],x.end[1]),mousePosition,30)
+            if horizontal!=None:
+                b.append(horizontal)
+                c.append(float(module(array(horizontal)-array(mousePosition))))
+                matchHorizontal=True
+            if horizontal1!=None:
+                b.append(horizontal1)
+                c.append(float(module(array(horizontal1)-array(mousePosition))))
+                matchHorizontal=True
+            if vertical!=None:
+                d.append(vertical)
+                e.append(float(module(array(vertical)-array(mousePosition))))
+                matchVertical=True
+            if vertical1!=None:
+                d.append(vertical1)
+                e.append(float(module(array(vertical1)-array(mousePosition))))
+                matchVertical=True
+
+        if matchHorizontal==True and matchVertical==True:
+            horizontal=b[c.index(min(c))]  
+            vertical=d[e.index(min(e))]  
+            return (horizontal[0],vertical[1])
+        elif matchHorizontal==True and matchVertical==False:
+            horizontal=b[c.index(min(c))]
+            return horizontal  
+        elif matchHorizontal==False and matchVertical==True:
+            vertical=d[e.index(min(e))]
+            return vertical
+        else:
+            return mousePosition
+        print('devuelvo None')
 
     @property
     def vehicleList(self):
