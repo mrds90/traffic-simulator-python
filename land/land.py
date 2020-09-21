@@ -2,7 +2,7 @@
 
 import random
 from methods import *
-from street import Street
+from street import *
 
 class SingletonMeta(type):
     _instances = {}
@@ -17,10 +17,10 @@ class Land(metaclass=SingletonMeta):
         self.__size=(width,height)
         self.__streetList:Street=[]
         self.__streetWidht=int(self.size[0]*0.03)
-        self.__intercetion:list=[]
+        self.__intersections:list=[]
         
     
-    def append(self,positionOne,positionTwo,clickOne,lanes:int):
+    def street_append(self,positionOne,positionTwo,clickOne,lanes:int):
         if positionOne==positionTwo:
             
             positionTwo=tuple(array(positionTwo)+[1,1])
@@ -40,21 +40,21 @@ class Land(metaclass=SingletonMeta):
         #print(len(self.__streetList)-1)
     
     def intersect_point(self):
-        self.__intercetion=[]
+        self.__intersections=[]
+        b=[]
         for x in range(len(self.__streetList)):
             for y in range(x+1,len(self.__streetList)):
                 a=getIntersectPoint(self.__streetList[x].begining,self.__streetList[x].end,self.__streetList[y].begining,self.__streetList[y].end)
                 if a!=None:
-                    self.__intercetion.append(a)
-        
-        
+                    b.append(a)
         res = [] 
-        for i in self.__intercetion: 
-            if i not in res: 
-                res.append(i)
-        self.__intercetion=res
+        if (len(b)>0):
+            for i in b: 
+                if i not in res: 
+                    res.append(i)
+                    self.__intersections.append(Intersection(i,self.__streetList))
 
-                    #print ('interseccion ',self.__intercetionón '':'',self.__intercetion[len(self.__intercetion)-1])
+                    #print ('interseccion ',self.__intersectionón '':'',self.__intersection[len(self.__intersection)-1])
                 
 
 
@@ -65,6 +65,6 @@ class Land(metaclass=SingletonMeta):
     def size(self):
         return self.__size
     @property
-    def intercetion(self):
-        return self.__intercetion
+    def intersections(self):
+        return self.__intersections
     

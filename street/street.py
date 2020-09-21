@@ -1,4 +1,4 @@
-from methods import versor_from_two_points
+from methods import *
 import random
 import pygame
 from numpy import array
@@ -29,7 +29,6 @@ class Street (pygame.sprite.Sprite):
                 
         except ValueError:
             print ('posiciones ingresadas incorrectamente')
-
 
     def laneCalculator(self, lanes):
         self.__lanes=[]
@@ -66,7 +65,8 @@ class Street (pygame.sprite.Sprite):
 
     def lane(self,id):
         return self.__lanes[id]
-    
+    def laneList(self):
+        return self.__lanes
     @property
     def widht(self):
         return self.__widht
@@ -162,3 +162,44 @@ class Lane (pygame.sprite.Sprite):
     
 
 
+class Intersection:
+    def __init__(self,position,streetList):
+        self.__position=position
+        self.__streetListOut=[]
+        self.__streetListIn=[]
+        for street in streetList:
+            self.streetCheck(street)
+        
+    def set_inputs_streets(street):
+        if street.end!=self.__postiton:
+            self.__streetListIn.append(street)
+        res = [] 
+        for i in self.__streetListIn: 
+            if i not in res: 
+                res.append(i)
+        self.__streetListIn=res
+    def set_ouputs_streets(street):
+        if street.begining!=self.__postiton:
+            self.__streetListIn.append(street)
+        res = [] 
+        for i in self.__streetListIn: 
+            if i not in res: 
+                res.append(i)
+        self.__streetListIn=res
+    def streetCheck(self,street):
+        a=getIntersectPoint(street.begining,street.end,self.__position,self.__position)
+        if a!=None:
+            self.set_ouputs_streets(street)
+            self.set_inputs_streets(street)
+
+    @property
+    def posiblesDirection(self):
+        return self.__streetListOut
+    @property
+    def position(self):
+        return self.__position
+
+                
+
+
+    

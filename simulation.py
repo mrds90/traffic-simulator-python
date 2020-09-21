@@ -1,8 +1,13 @@
 from traffic import *
+from land import *
+from tools import *
 
-traffic=Traffic(800,600)
+widht=800
+height=600
+traffic=Traffic(widht,height)
+land=Land(widht,height)
 pygame.init() # inicializar pygame (OBLIGATORIO) para usar los recursos de pygame
-windowsSize=(traffic.size)
+windowsSize=(land.size)
 window=pygame.display.set_mode(windowsSize) #seteo ventana
 pygame.display.set_caption("Traffic Simulator") #nombre de ventana
 
@@ -46,51 +51,49 @@ while True:
                 click=True
                 pos1=pygame.mouse.get_pos()
                 if predict==True:
-                    pos1=traffic.magnetStreet(pos1,clickNumber)
-                    pos1=traffic.magnetStreetLimits(pos1,clickNumber)
+                    pos1=magnet_street(pos1,clickNumber,land.streetList)
                     if predictBorderCoincidence==True:
-                        pos1=traffic.magnetHorizontalAndVertical(pos1,clickNumber)
-                    pos1=traffic.magnetStreetIntercetion(pos1)
+                        pos1=traffic.magnet_horizontal_and_vertical(pos1,clickNumber,land.streetList)
+                    pos1=magnet_street_intersection(pos1,land.intersections)
                 clickNumber=clickNumber*-1
                 if clickNumber==-1:
                     lanes=1
                   
 
     if run==True:
-        traffic.move()
+        traffic.run(land.streetList)
 
     if predict == True:
-        pos2=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
-        pos2=traffic.magnetStreetLimits(pos2,clickNumber)
+        pos2=magnet_street(pygame.mouse.get_pos(),clickNumber,land.streetList)
         if predictBorderCoincidence==True:
-                        pos2=traffic.magnetHorizontalAndVertical(pos2,clickNumber)
-        pos2=traffic.magnetStreetIntercetion(pos2)
+                        pos2=traffic.magnet_horizontal_and_vertical(pos2,clickNumber,land.streetList)
+        pos2=magnet_street_intersection(pos2,land.intersections)
+        
     else:
         pos2=pygame.mouse.get_pos()
     if clickNumber==1 :
         
-        traffic.streetAppend(pos1,pos2,click,lanes)
+        land.street_append(pos1,pos2,click,lanes)
         click=False
     
-    traffic.intersections()
+    land.intersect_point()
 
     if cars==True:
-        traffic.vehicleAppend(3)
+        traffic.vehicleAppend(3,land.streetList)
         cars=False
         
 
     
 
-    for street in traffic.streetList:
+    for street in land.streetList:
         street.draw(window)
     for car in traffic.vehicleList:
         car.draw(window)
     if predict==True:
-        aux=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)
-        aux=traffic.magnetStreetLimits(aux,clickNumber)
+        aux=magnet_street(pygame.mouse.get_pos(),clickNumber,land.streetList)
         if predictBorderCoincidence==True:
-                        aux=traffic.magnetHorizontalAndVertical(aux,clickNumber)
-        aux=traffic.magnetStreetIntercetion(aux)
+                        aux=traffic.magnet_horizontal_and_vertical(aux,clickNumber,land.streetList)
+        aux=magnet_street_intersection(aux,land.intersections)
         aux1=int(aux[0])
         aux2=int(aux[1])
         pygame.draw.circle(window,(20,20,20),(aux1,aux2),5)
