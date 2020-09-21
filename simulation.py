@@ -13,6 +13,7 @@ clickNumber=-1
 currentStreet=False
 predict=True
 predictBorderCoincidence=False
+run=False
 pygame.Rect(0,0,10,10)
 while True:
     window.fill((30,180,40))#recibe tupla con RGB
@@ -33,6 +34,8 @@ while True:
                     predict=False
             if evento.key==pygame.K_a:
                     predictBorderCoincidence=True
+            if evento.key==pygame.K_r:
+                    run=not run
         if evento.type==KEYUP:
             if evento.key==pygame.K_e:
                 predict=True
@@ -53,7 +56,8 @@ while True:
                     lanes=1
                   
 
-    
+    if run==True:
+        traffic.move()
 
     if predict == True:
         pos2=traffic.magnetStreet(pygame.mouse.get_pos(),clickNumber)

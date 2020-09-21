@@ -1,11 +1,10 @@
 import random
 from land import Land
-import numpy
 from numpy import array
-from methods import vector_longitud
-from methods import scale_rect
-from methods import rot_center
-from methods import angle_between_vector
+from methods import *
+import street
+
+
 import pygame
 
 class Vehicle(pygame.sprite.Sprite):
@@ -22,18 +21,8 @@ class Vehicle(pygame.sprite.Sprite):
         self.__aceletation=random.randint(4,10) #aceleracion del vehiculo
         self.__lane=random.randint(1,land.streetList[streetID].lanes)
         self.__direction=self.__initial_direction(land.streetList[streetID].yDir)
-        self.__position=self.__initial_position(land.streetList[streetID].begining,land.streetList[streetID].end)
-        desp=int((land.streetList[streetID].lanes/2)-self.__lane)
+        self.__position=self.__initial_position(land.streetList[streetID].begining,land.streetList[streetID].end,land.streetList[streetID].lanes,land.streetList[streetID].widht)
         
-        if((land.streetList[streetID].lanes%2)>0):
-            a=0
-            
-            #print ("impar: ")
-        else:
-            a=0.5
-           
-            #print ("par: ")
-        self.__position=self.__position+(a+desp)*land.streetList[streetID].widht*0.9*array(self.__xDirection)
         #print("desplazo: ",(a+desp)*land.streetList[streetID].widht*0.8)                        
         angle=angle_between_vector(self.__yDirection,(0,1))
         self.__carImage=pygame.transform.rotate(self.__carImage,90)
@@ -41,10 +30,9 @@ class Vehicle(pygame.sprite.Sprite):
         self.__rect=self.__carImage.get_rect()
         
         print(self.__position)
-        print(self.position)
-        
+               
 
-        self.__rect.center= self.position
+        self.__rect.center= self.__position
         #self.__rect.center = self.__position
         #print('posición :',self.__position)
         #print('carImage :',self.__carImage)
@@ -58,13 +46,40 @@ class Vehicle(pygame.sprite.Sprite):
     def __initial_direction(self,streetYDriection):
        self.__yDirection=streetYDriection
        self.__xDirection=streetYDriection[1],-streetYDriection[0]
+       
        return [self.__xDirection,self.__yDirection]
        
-    def __initial_position(self,streetOrigin,streetEnd):
-       initialPosition=array(self.__yDirection)*vector_longitud((array(streetEnd)-array(streetOrigin)))*self.__streetPercent+array(streetOrigin)
-       return initialPosition
+    def __initial_position(self,streetOrigin,streetEnd,lanes,steetWidht):
+        initialPosition=array(self.__yDirection)*vector_longitud((array(streetEnd)-array(streetOrigin)))*self.__streetPercent+array(streetOrigin)
+        desp=int((lanes/2)-self.__lane)
+        
+        if((lanes%2)>0):
+            a=0
+            
+            #print ("impar: ")
+        else:
+            a=0.5
+           
+            #print ("par: ")
+        initialPosition=initialPosition+(a+desp)*steetWidht*0.9*array(self.__xDirection)
+        return initialPosition
     def draw(self,surface):
         surface.blit(self.__carImage,self.__rect)
+    def basic_move(self,street,lanes):
+        
+        escala=100#variable a definir globalmente
+        pixelPerFrame=int(self.__speed/escala)
+        if pixelPerFrame<1:
+            pixelPerFrame=1
+
+        position=(array(self.__position)+pixelPerFrame*array(self.__direction[1]))
+        laneModifier=(int(abs(lanes/2)-self.lane)+1)*street.widht
+        print(laneModifier)
+
+        if laneModifier*1.5*module(self.__direction[1])<module(position-array(street.end)):
+            
+            self.__position=tuple(position)
+            self.__rect.center= self.__position
 
         
         

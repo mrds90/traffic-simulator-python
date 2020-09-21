@@ -17,8 +17,11 @@ class Traffic:
     def vehicleAppend(self,vehicle):
         for y in range(vehicle):
             self.__vehicle.append((Vehicle(random.randint(0,len(self.__land.streetList)-1),self.__land)))
-
-    def intersections(self)      :
+    def move(self):
+        pygame.time.delay(50)
+        for y in self.__vehicle:
+            y.basic_move(self.streetList[y.streetID],self.streetList[y.streetID].lanes)
+    def intersections(self):
         self.__land.intersect_point()
         """
         a=len(self.__land.intercetion)
