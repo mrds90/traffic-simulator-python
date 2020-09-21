@@ -14,10 +14,8 @@ def versor_from_two_points(pointOne,pointTwo):
     return y
 def a_versor(vector):
     vector=array(vector);
-    return vector/vector_longitud(vector)
+    return vector/module(vector)
 
-def vector_longitud(vector:tuple):
-    return math.sqrt(sum(pow(vector,2)))
 def angle_between_vector(v1,v2):
     v1=a_versor(v1)
     v2=a_versor(v2)

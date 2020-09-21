@@ -3,7 +3,7 @@ from street import Street
 from methods import *
 from land import Land
 from numpy import array
-import random
+from random import randint
 import pygame, sys
 from pygame.locals import *
 
@@ -15,8 +15,24 @@ class Traffic:
         #self.b=0
     
     def vehicleAppend(self,vehicle):
-        for y in range(vehicle):
-            self.__vehicle.append((Vehicle(random.randint(0,len(self.__land.streetList)-1),self.__land)))
+        try:
+            if self.streetList==[]:
+                raise ValueError
+            else:
+                for y in range(vehicle):
+                    if len(self.streetList)>1:
+                        street=self.streetList[randint(0,len(self.streetList)-1)]
+                    else:
+                        street=self.streetList[0]
+                    if street.lanes>1:
+                        lane=randint(0,street.lanes-1)
+                    else:
+                        lane=0
+
+                    self.__vehicle.append(Vehicle(street,lane))
+        except ValueError:
+            print ('there is no streets')
+
     def move(self):
         pygame.time.delay(50)
         for y in self.__vehicle:
