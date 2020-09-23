@@ -9,7 +9,7 @@ def magnet_street(mousePosition,clickNumber,streetList):
             c=[]
             match=False
             for x in streetList[0:len(streetList)-1-clickNumber]:
-                a=circle_and_segment_intercection(x.begining,x.end,mousePosition,30)
+                a=circle_and_segment_intercection(x.begining,x.end,mousePosition,15)
                     
                 if a!=None:
                         
@@ -32,7 +32,7 @@ def magnet_street_intersection(mousePosition,intersectionList):
             c=[]
             match=False
             for x in intersectionList:
-                a=pointOnACircle(x.position,mousePosition,25)
+                a=pointOnACircle(x.position,mousePosition,15)
                     
                 if a!=None:
                         
@@ -52,8 +52,8 @@ def magnet_street_limits(mousePosition,clickNumber,streetList):
         c=[]
         match=False
         for x in streetList[0:len(streetList)-1-clickNumber]:
-            a=pointOnACircle(x.begining,mousePosition,30)
-            a1=pointOnACircle(x.end,mousePosition,30)
+            a=pointOnACircle(x.begining,mousePosition,15)
+            a1=pointOnACircle(x.end,mousePosition,15)
             if a!=None:
                 
                 b.append(a)

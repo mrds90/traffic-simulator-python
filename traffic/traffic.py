@@ -1,4 +1,4 @@
-from vehicle import Vehicle
+from vehicle import *
 from street import Street
 from methods import *
 from land import Land
@@ -32,12 +32,20 @@ class Traffic:
         except ValueError:
             print ('there is no streets')
 
-    def run(self,streetList):
+    def run(self,streetList,intersectionList):
         pygame.time.delay(50)
-        for y in self.__vehicle:
-            y.basic_move(streetList[y.streetID],streetList[y.streetID].lanes)
-    
+        
 
+        for y in self.__vehicle:
+            for intersection in intersectionList:
+                aux=pointOnACircle(intersection.position,y.position,int(y.speed/10))
+                print (aux)
+                if aux!=None:
+                    y.intercection_move(intersection)
+
+                y.basic_move(streetList[y.street.id],streetList[y.street.id].lanes)
+    
+ 
     @property
     def vehicleList(self):
         return self.__vehicle

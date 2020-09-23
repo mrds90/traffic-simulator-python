@@ -27,7 +27,7 @@ class Land(metaclass=SingletonMeta):
 
         if clickOne==True:
             
-            self.__streetList.append(Street(len(self.__streetList)-1,positionOne,positionTwo,lanes,self.__streetWidht))
+            self.__streetList.append(Street(len(self.__streetList),positionOne,positionTwo,lanes,self.__streetWidht))
         elif clickOne==False:
             """ if predict==True:
                 for x in range(len(self.__streetList)):
@@ -40,22 +40,47 @@ class Land(metaclass=SingletonMeta):
         #print(len(self.__streetList)-1)
     
     def intersect_point(self):
-        self.__intersections=[]
-        b=[]
+        #self.__intersections=[]
+        #b=[]
         for x in range(len(self.__streetList)):
+            streetX=self.__streetList[x] 
             for y in range(x+1,len(self.__streetList)):
-                a=getIntersectPoint(self.__streetList[x].begining,self.__streetList[x].end,self.__streetList[y].begining,self.__streetList[y].end)
-                if a!=None:
-                    b.append(a)
-        res = [] 
-        if (len(b)>0):
-            for i in b: 
-                if i not in res: 
-                    res.append(i)
-                    self.__intersections.append(Intersection(i,self.__streetList))
-
-                    #print ('interseccion ',self.__intersectionón '':'',self.__intersection[len(self.__intersection)-1])
+                streetY=self.__streetList[y]
+                for laneX in streetX.laneList:
+                    for laneY in streetY.laneList:
+                        a=getIntersectPoint(laneX.begining,laneX.end,laneY.begining,laneY.end)
+                        if a!=None:
+                            intersection=Intersection(a,self.__streetList)
+                            agregar=True
+                            if len(laneX.intersectionList)>0:
+                                for inter in laneX.intersectionList:
+                                    if intersection==inter:
+                                        agregar=False
+                            if agregar==True:
+                                laneX.add_intersection(intersection)
+                                laneY.add_intersection(intersection)
                 
+                    
+                
+    def get_intersections(self):                   
+        intersectionList=[]
+        for street in self.__streetList:
+            for lane in street.laneList:
+                if len(lane.intersectionList)>0:
+                    print('the street ', street.id ,'in lane',street.laneList.index(lane), 'have ',len(lane.intersectionList),'intersections')
+                for intesection in lane.intersectionList:
+                    if intesection not in intersectionList:
+                        intersectionList.append(intesection)
+                        
+        if len(intersectionList)==0:
+            print('there is no intersections')
+        return intersectionList
+    
+    def update_intersections(self):
+        print('updating intersections ...')
+        self.__intersections=self.get_intersections()
+
+    
 
 
     @property

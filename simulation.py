@@ -19,49 +19,52 @@ currentStreet=False
 predict=True
 predictBorderCoincidence=False
 run=False
+updateIntersecrions=False
 pygame.Rect(0,0,10,10)
 while True:
     window.fill((30,180,40))#recibe tupla con RGB
     #Control de eventos
-    for evento in pygame.event.get():
-        if evento.type==QUIT: #¿es el evento de apretar la cruz?
+    for event in pygame.event.get():
+        if event.type==QUIT: #¿es el evento de apretar la cruz?
             pygame.quit() #Si==>cerrar los procesos de pygame
             sys.exit() #y cerrar ventana
-        if evento.type==KEYDOWN:
+        if event.type==KEYDOWN:
             if cars==False:
-                if evento.key==pygame.K_q and clickNumber==-1:
+                if event.key==pygame.K_q and clickNumber==-1:
                     print('car will be placed')
                     cars=True
-                if evento.key==pygame.K_w:
+                if event.key==pygame.K_w:
                     if clickNumber==1:
                         lanes+=1
-            if evento.key==pygame.K_e:
+            if event.key==pygame.K_e:
                     predict=False
-            if evento.key==pygame.K_a:
+            if event.key==pygame.K_a:
                     predictBorderCoincidence=True
-            if evento.key==pygame.K_r:
+            if event.key==pygame.K_r:
                     run=not run
-        if evento.type==KEYUP:
-            if evento.key==pygame.K_e:
+        if event.type==KEYUP:
+            if event.key==pygame.K_e:
                 predict=True
-            if evento.key==pygame.K_a:
+            if event.key==pygame.K_a:
                     predictBorderCoincidence=False
         if cars==False:
-            if evento.type==pygame.MOUSEBUTTONDOWN:
-                click=True
-                pos1=pygame.mouse.get_pos()
-                if predict==True:
-                    pos1=magnet_street(pos1,clickNumber,land.streetList)
-                    if predictBorderCoincidence==True:
-                        pos1=traffic.magnet_horizontal_and_vertical(pos1,clickNumber,land.streetList)
-                    pos1=magnet_street_intersection(pos1,land.intersections)
-                clickNumber=clickNumber*-1
-                if clickNumber==-1:
-                    lanes=1
+            if event.type==pygame.MOUSEBUTTONDOWN:
+                if event.button==1:
+                    updateIntersecrions=True
+                    click=True
+                    pos1=pygame.mouse.get_pos()
+                    if predict==True:
+                        pos1=magnet_street(pos1,clickNumber,land.streetList)
+                        if predictBorderCoincidence==True:
+                            pos1=traffic.magnet_horizontal_and_vertical(pos1,clickNumber,land.streetList)
+                        pos1=magnet_street_intersection(pos1,land.intersections)
+                    clickNumber=clickNumber*-1
+                    if clickNumber==-1:
+                        lanes=1
                   
 
     if run==True:
-        traffic.run(land.streetList)
+        traffic.run(land.streetList,land.intersections)
 
     if predict == True:
         pos2=magnet_street(pygame.mouse.get_pos(),clickNumber,land.streetList)
@@ -76,7 +79,10 @@ while True:
         land.street_append(pos1,pos2,click,lanes)
         click=False
     
-    land.intersect_point()
+    if clickNumber==-1 and updateIntersecrions==True:
+        land.intersect_point()
+        land.update_intersections()
+        updateIntersecrions=False
 
     if cars==True:
         traffic.vehicleAppend(3,land.streetList)
