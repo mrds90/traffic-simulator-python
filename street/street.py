@@ -1,3 +1,4 @@
+import weakref
 from methods import *
 import random
 import pygame
@@ -45,9 +46,15 @@ class Street (pygame.sprite.Sprite):
             #print ("par: ")
             begining=self.begining-(a+desp)*self.__widht*array(self.__xDir)
             end=self.__end-(a+desp)*self.__widht*array(self.__xDir)
-            x=Lane(range(lanes).index(x),begining,end,self.__maxSpeedLimit,self.__widht)
+            x=Lane(range(lanes).index(x),begining,end,self)
             self.__lanes.append(x)
             
+    def update_intersections(self,streetList):
+        for lane in self.laneList:
+            for street in streetList:
+                if street!=self:
+                    lane.update_intersections(street.laneList)
+
 
  
     def draw(self,surface):
@@ -100,51 +107,64 @@ class Lane (pygame.sprite.Sprite):
     __yDir:tuple
     __xDir:tuple
 
-    def __init__(self,laneNumber,begining:tuple,end:tuple,streetSpeed,widht):
+    def __init__(self,laneNumber,begining:tuple,end:tuple,street:Street):
         try:
             if (len(begining) !=2 or len(end) !=2):
                 raise ValueError
             else:
+                self.__street= street #got parent
                 self.__laneNumber=laneNumber
                 self.__begining=begining
                 self.__end=end
-                self.__yDir=tuple(versor_from_two_points(self.__begining,self.__end))
-                self.__xDir=tuple([self.__yDir[1],-1*self.__yDir[0]])
-                self.__maxSpeedLimit=streetSpeed+20*laneNumber
+                self.__maxSpeedLimit=street.maxSpeedLimit+20*laneNumber
                 #print('velocidad maxima de carril: ',self.__maxSpeedLimit)
-                self.__widht=widht
                 self.__intersectionList=[]
 
         except ValueError:
             print ('posiciones ingresadas incorrectamente')
-
-
-    def draw(self,surface):
-        pygame.draw.line(surface, (100,100,100), self.begining, self.end,self.__widht)
     
-    def add_intersection(self,intersection):
-        repeat=False
-        for aux in self.__intersectionList:
-            
-            if list(map(int, intersection.position))==list(map(int, aux.position)):
-                repeat=True
-                aux=intersection
-            else:
-                print(intersection.position,aux.position)
+    def __eq__(self, item):
+        try:
+            if isinstance(item, Lane):
+                return list(self.__begining) == list(item.begining) and list(self.__end) == list(item.end)
+        except TypeError:
+            return NotImplemented
+
+
         
-        if repeat==False:
-            self.__intersectionList.append(intersection)
 
-
+    
+    def draw(self,surface):
+        pygame.draw.line(surface, (100,100,100), self.begining, self.end,self.__street.widht)
+    
+    def update_intersections(self, laneList):
+        
+        for lane in laneList:
+            a=getIntersectPoint(self.begining,self.end,lane.begining,lane.end)
+            if a!=None:
+                
+                repeat = False   
+                for intersection in self.__intersectionList:
+                    if list(map(int,a)) == list(map(int,intersection.position)): #conviero los elementos del vector en int
+                        if lane not in (intersection.posiblesDirection + intersection.inputLanes):
+                            intersection.update(lane)
+                        repeat=True
+                if repeat==False:
+                    self.__intersectionList.append(Intersection(a,lane,self))
+                        
+    
+    @property
+    def street (self):
+        return self.__street
     @property
     def widht(self):
-        return self.__widht
+        return self.__street.widht
     @property
     def yDir(self):
-        return self.__yDir 
+        return self.__street.yDir 
     @property
     def xDir(self):
-        return self.__xDir 
+        return self.__street.xDir 
     @property
     def laneNumber(self):
         return self.__laneNumber
@@ -178,53 +198,62 @@ class Lane (pygame.sprite.Sprite):
 
 
 class Intersection:
-    def __init__(self,position,streetList):
-        
+    def __init__(self,position,lane,parent):
+        self.__lane = weakref.ref(parent)
         self.__position=position
-        self.__streetListOut=[]
-        self.__streetListIn=[]
-        for street in streetList:
-            self.streetCheck(street)
+        self.__laneListOut=[]
+        self.__laneListIn=[]
+        self.update(lane)
     
     def __eq__(self, other): 
         if not isinstance(other, Intersection):
             # don't attempt to compare against unrelated types
             return NotImplemented
+       
+
+        return self.position == other.__position and self.__laneListOut == other.__laneListOut and self.__laneListIn == other.__laneListIn
+    def update(self,lane):
+        if self.lane_check:
+            if (not self.set_ouputs_lanes(lane)):
+                self.set_inputs_lanes(lane)
+        else:
+            print('not an intersection of current lane')
+
+    def lane_check(self,lane):
+        #print('checking streets involves')
+        a=circle_and_segment_intercection(lane.begining,lane.end,self.__position,lane.widht)
+        if a!=None:
+            return True    
+        else:
+            return False
+          
+    def set_inputs_lanes(self,lane):
+        if lane not in (self.__laneListIn + self.__laneListOut):
+            if list(lane.end)==self.__position:
+                self.__laneListIn.append(lane)
+                return True
+        else:
+            print("lane is already in current intersection")
         
 
-        return self.position == other.__position and self.__streetListOut == other.__streetListOut and self.__streetListIn == other.__streetListIn
-    
-    def streetCheck(self,street):
-        #print('checking streets involves')
-        a=circle_and_segment_intercection(street.begining,street.end,self.__position,street.widht)
+    def set_ouputs_lanes(self,lane:Lane):
+        #print('finding posibles outs')
+        if lane not in (self.__laneListIn + self.__laneListOut):
+            if list(lane.end)!=self.__position:
+                self.__laneListOut.append(lane)
+                return True
+        else:
+            print("lane is already in current intersection")
         
-        if a!=None:
-            self.set_ouputs_streets(street)
-            self.set_inputs_streets(street)
-            
-    def set_inputs_streets(self,street):
-        if street.end!=self.__position:
-            self.__streetListIn.append(street)
-        res = [] 
-        for i in self.__streetListIn: 
-            if i not in res: 
-                res.append(i)
-        self.__streetListIn=res
-    def set_ouputs_streets(self,street):
-        #print('finding posible outs')
-        if street.begining!=self.__position:
-            self.__streetListOut.append(street)
-        res = [] 
-        for i in self.__streetListOut: 
-            if i not in res: 
-                res.append(i)
-        self.__streetListOut=res
-        #print(len(self.__streetListIn), ' posible outs' )
-    
+
+      
 
     @property
     def posiblesDirection(self):
-        return self.__streetListOut
+        return self.__laneListOut
+    @property
+    def inputLanes(self):
+        return self.__laneListIn
     @property
     def position(self):
         return self.__position

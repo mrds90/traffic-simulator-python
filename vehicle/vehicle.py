@@ -12,23 +12,33 @@ class Vehicle(pygame.sprite.Sprite):
     def __init__(self,street:Street,lane):
         pygame.sprite.Sprite.__init__(self)
         self.__escala=10#variable a definir globalmente
-        self.__carImage = pygame.image.load("Images/car01.png") #Cargar imagen
-        self.__carImage = pygame.transform.scale(self.__carImage,scale_rect(1,self.__carImage.get_rect().size,(street.widht,0),0) ) #escalo al 10% del tamaño de la pantalla el auto
         self.__street=street
         self.__streetPercent=randint(0,80)/100.0
-        self.__relativeMax= randint(66,133)/100 #respeto de la velocidad de los conductores
-        self.__speed=randint(30,int(round(self.__relativeMax*(street.laneList[lane].maxSpeedLimit)))) #velocidad del vehiculo al comenzar
+        self.__lane=lane
+        self.__relativeMax= randint(76,133)/100 #respeto de la velocidad de los conductores
+        self.__set_speed()
         print('velocidad del vehiculo: ',self.__speed)
         self.__aceletation=randint(4,10) #aceleracion del vehiculo
-        self.__lane=lane
         self.__direction=self.__initial_direction()
         self.__position=self.set_position(self.__lane)
-        self.__set_image_orientation()
+        self.__load_image()
+        
 
-    def __set_image_orientation(self):    
+
+
+    def __set_speed(self):
+        self.__speed=randint(20,int(round(self.__relativeMax*self.__street.laneList[self.__lane].maxSpeedLimit))) #velocidad del vehiculo al comenzar
+        
+        
+    def __load_image(self):
+        self.__carImage = pygame.image.load("Images/car01.png") #Cargar imagen
+        self.__carImage = pygame.transform.scale(self.__carImage,scale_rect(1,self.__carImage.get_rect().size,(self.__street.widht,0),0) ) #escalo al 10% del tamaño de la pantalla el auto
+        self.__set_image_orientation((-1,0))
+
+    def __set_image_orientation(self,originalDirection):    
         #print("desplazo: ",(a+desp)*land.streetList[streetID].widht*0.8)                        
-        angle=angle_between_vector(self.__yDirection,(0,1))
-        self.__carImage=pygame.transform.rotate(self.__carImage,90)
+        angle=angle_between_vector(self.__yDirection,originalDirection)
+        
         self.__carImage=pygame.transform.rotate(self.__carImage,-1*angle)
         self.__rect=self.__carImage.get_rect()
         self.__rect.center= self.__position
@@ -58,43 +68,72 @@ class Vehicle(pygame.sprite.Sprite):
 
     def draw(self,surface):
         surface.blit(self.__carImage,self.__rect)
-    def basic_move(self,street,lanes):
-        
-        
-        pixelPerFrame=int(self.__speed/self.__escala)
+    def pixel_per_frame(self):
+        pixelPerFrame=(self.__speed/self.__escala)
         #print(pixelPerFrame)
         if pixelPerFrame<1:
             pixelPerFrame=1
+        return pixelPerFrame
 
-        position=(array(self.__position)+pixelPerFrame*array(self.__yDirection))
+    def basic_move(self,intersection):
         
-        if module(pixelPerFrame)<module(position-array(self.__street.laneList[self.__lane].end)):
-            
+        pixelPerFrame=self.pixel_per_frame()
+        position=(array(self.__position)+pixelPerFrame*array(self.__yDirection))
+    
+        if (pixelPerFrame)<module(self.__position-array(self.__street.laneList[self.__lane].end))*1.2 or intersection==True:
             self.__position=tuple(position)
             self.__rect.center= self.__position
-    
-    def intercection_move(self,intercection:Intersection):
-        
-        print ('posibles salidas :', len(intercection.posiblesDirection))
-        streetIndex=randint(0,len(intercection.posiblesDirection)-1)
-            
-        
-        
-        laneIndex=randint(0,intercection.posiblesDirection[streetIndex].lanes-1)
-        
-        
-        self.__street=intercection.posiblesDirection[streetIndex]
-        self.__lane=laneIndex
-        self.__yDirection=self.__street.laneList[self.__lane].yDir
-        start=self.__street.laneList[self.__lane].begining
-        end=self.__street.laneList[self.__lane].end
-        center=self.__position
-        radius=int(self.__speed/self.__escala)
-        posisition=array(circle_and_segment_intercection(start,end,center,2*radius))
-        print(posisition)
-        self._position=tuple(intercection.position)
-        self.__set_image_orientation()
+   
 
+    
+    def intersection_move(self):
+        pixelPerFrame=self.pixel_per_frame()
+        posiblesIntersections=[]
+        distanceList=[]
+        match=False
+        for intersection in self.street.laneList[self.__lane].intersectionList:
+            
+            point=pointOnACircle(intersection.position,self.__position,pixelPerFrame)
+            # print('interseccion:',intersection.position,'pixel por frame:',self.position,pixelPerFrame,'match?:',point,'final de la calle:',self.__street.laneList[self.__lane].end)
+            if point!=None:
+                print(point)
+                posiblesIntersections.append(intersection)
+                distanceList.append(module(array(point)-array(self.__position)))
+                match=True
+        
+        if match==True:
+            intersection=posiblesIntersections[distanceList.index(min(distanceList))]
+
+            if intersection.posiblesDirection!=[]:
+                print ('posibles salidas :', len(intersection.posiblesDirection))
+
+                choice=randint(0,len(intersection.posiblesDirection)-1)
+
+                print('selecciono:',choice)
+                print('calle actual:',id(intersection.posiblesDirection[choice].street))
+                print('calle seleccionada:',id(self.__street))
+                
+                originalDirection=self.__yDirection
+                self.__street=intersection.posiblesDirection[choice].street
+                self.__lane=intersection.posiblesDirection[choice].laneNumber
+                self.__yDirection=self.__street.laneList[self.__lane].yDir
+
+                print(originalDirection,self.__yDirection)
+
+                start=self.__street.laneList[self.__lane].begining
+                end=self.__street.laneList[self.__lane].end
+                self.__position=intersection.position
+                if self.__yDirection!=originalDirection:
+                    self.__load_image()
+                self.__set_speed()
+        return match
+
+                
+                
+                
+    def move(self):
+        
+        self.basic_move(self.intersection_move())
         
         
         

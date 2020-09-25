@@ -56,7 +56,7 @@ while True:
                     if predict==True:
                         pos1=magnet_street(pos1,clickNumber,land.streetList)
                         if predictBorderCoincidence==True:
-                            pos1=traffic.magnet_horizontal_and_vertical(pos1,clickNumber,land.streetList)
+                            pos1=magnet_horizontal_and_vertical(pos1,clickNumber,land.streetList)
                         pos1=magnet_street_intersection(pos1,land.intersections)
                     clickNumber=clickNumber*-1
                     if clickNumber==-1:
@@ -69,7 +69,7 @@ while True:
     if predict == True:
         pos2=magnet_street(pygame.mouse.get_pos(),clickNumber,land.streetList)
         if predictBorderCoincidence==True:
-                        pos2=traffic.magnet_horizontal_and_vertical(pos2,clickNumber,land.streetList)
+                        pos2=magnet_horizontal_and_vertical(pos2,clickNumber,land.streetList)
         pos2=magnet_street_intersection(pos2,land.intersections)
         
     else:
@@ -80,7 +80,6 @@ while True:
         click=False
     
     if clickNumber==-1 and updateIntersecrions==True:
-        land.intersect_point()
         land.update_intersections()
         updateIntersecrions=False
 
@@ -98,7 +97,7 @@ while True:
     if predict==True:
         aux=magnet_street(pygame.mouse.get_pos(),clickNumber,land.streetList)
         if predictBorderCoincidence==True:
-                        aux=traffic.magnet_horizontal_and_vertical(aux,clickNumber,land.streetList)
+                        aux=magnet_horizontal_and_vertical(aux,clickNumber,land.streetList)
         aux=magnet_street_intersection(aux,land.intersections)
         aux1=int(aux[0])
         aux2=int(aux[1])

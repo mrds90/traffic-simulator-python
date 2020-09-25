@@ -33,17 +33,11 @@ class Traffic:
             print ('there is no streets')
 
     def run(self,streetList,intersectionList):
-        pygame.time.delay(50)
+        pygame.time.delay(30)
         
 
         for y in self.__vehicle:
-            for intersection in intersectionList:
-                aux=pointOnACircle(intersection.position,y.position,int(y.speed/10))
-                print (aux)
-                if aux!=None:
-                    y.intercection_move(intersection)
-
-                y.basic_move(streetList[y.street.id],streetList[y.street.id].lanes)
+            y.move()
     
  
     @property
