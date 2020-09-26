@@ -76,13 +76,17 @@ class Vehicle(pygame.sprite.Sprite):
         return pixelPerFrame
 
     def basic_move(self,intersection):
-        
-        pixelPerFrame=self.pixel_per_frame()
-        position=(array(self.__position)+pixelPerFrame*array(self.__yDirection))
     
-        if (pixelPerFrame)<module(self.__position-array(self.__street.laneList[self.__lane].end))*1.2 or intersection==True:
+        advance=1
+        if intersection==True:
+            advance=2
+        pixelPerFrame=self.pixel_per_frame()
+        position=(array(self.__position)+advance*pixelPerFrame*array(self.__yDirection))
+    
+        if (pixelPerFrame)<module(self.__position-array(self.__street.laneList[self.__lane].end)) or intersection==True:
             self.__position=tuple(position)
             self.__rect.center= self.__position
+           
    
 
     
@@ -96,7 +100,7 @@ class Vehicle(pygame.sprite.Sprite):
             point=pointOnACircle(intersection.position,self.__position,pixelPerFrame)
             # print('interseccion:',intersection.position,'pixel por frame:',self.position,pixelPerFrame,'match?:',point,'final de la calle:',self.__street.laneList[self.__lane].end)
             if point!=None:
-                print(point)
+                # print(point)
                 posiblesIntersections.append(intersection)
                 distanceList.append(module(array(point)-array(self.__position)))
                 match=True
@@ -118,7 +122,7 @@ class Vehicle(pygame.sprite.Sprite):
                 self.__lane=intersection.posiblesDirection[choice].laneNumber
                 self.__yDirection=self.__street.laneList[self.__lane].yDir
 
-                print(originalDirection,self.__yDirection)
+                # print(originalDirection,self.__yDirection)
 
                 start=self.__street.laneList[self.__lane].begining
                 end=self.__street.laneList[self.__lane].end

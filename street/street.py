@@ -135,7 +135,7 @@ class Lane (pygame.sprite.Sprite):
 
     
     def draw(self,surface):
-        pygame.draw.line(surface, (100,100,100), self.begining, self.end,self.__street.widht)
+        pygame.draw.line(surface, (180,180,180), self.begining, self.end,self.__street.widht)
     
     def update_intersections(self, laneList):
         
@@ -199,10 +199,11 @@ class Lane (pygame.sprite.Sprite):
 
 class Intersection:
     def __init__(self,position,lane,parent):
-        self.__lane = weakref.ref(parent)
+        self.__lane = parent
         self.__position=position
         self.__laneListOut=[]
         self.__laneListIn=[]
+        self.update(parent)
         self.update(lane)
     
     def __eq__(self, other): 
@@ -229,7 +230,7 @@ class Intersection:
           
     def set_inputs_lanes(self,lane):
         if lane not in (self.__laneListIn + self.__laneListOut):
-            if list(lane.end)==self.__position:
+            if list(map(int,lane.end))==list(map(int,self.__position)):
                 self.__laneListIn.append(lane)
                 return True
         else:
@@ -239,7 +240,7 @@ class Intersection:
     def set_ouputs_lanes(self,lane:Lane):
         #print('finding posibles outs')
         if lane not in (self.__laneListIn + self.__laneListOut):
-            if list(lane.end)!=self.__position:
+            if list(map(int,lane.end))!=list(map(int,self.__position)):
                 self.__laneListOut.append(lane)
                 return True
         else:
