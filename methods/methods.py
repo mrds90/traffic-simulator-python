@@ -86,10 +86,10 @@ def predictIntersectPoint(p,endOne,q,endTwo):
     if cross(r,s)!=0 and t>=0 and t<=1 and u>=0 and u<=1:
         prediction=p+t*r
         if module((prediction)-endTwo)<50:
-            return tuple(prediction)
+            return tuple(map(int,prediction))
         else:
-            return tuple(endTwo)
-    return tuple(endTwo)
+            return tuple(map(int,endTwo))
+    return tuple(map(int,endTwo))
 
 
 
@@ -112,7 +112,7 @@ def circle_and_segment_intercection(start,end,center,radius):
  
 
     if abs(dist)<=radius:
-        return tuple(start+a_versor(segment)*side)
+        return tuple(map(int,start+a_versor(segment)*side))
     else:
         return None
     
@@ -123,7 +123,7 @@ def pointOnACircle (point,center,radius):
     center=array(center)
 
     if module(point-center)<=radius:
-        return tuple(point)
+        return tuple(map(int,point))
     else:
         return None
 

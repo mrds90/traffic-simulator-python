@@ -1,6 +1,11 @@
 from methods import *
+
+# def magnet(mousePosition,clickNumber,streetList):
+#     pos=magnet_horizontal_and_vertical(mousePosition,clickNumber,streetList)
+#     pos=magnet_street(pos,clickNumber,streetList)
+
+
 def magnet_street(mousePosition,clickNumber,streetList):
-            
         limite=magnet_street_limits(mousePosition,clickNumber,streetList)
         if limite==None:
             if clickNumber==1:
@@ -25,7 +30,8 @@ def magnet_street(mousePosition,clickNumber,streetList):
             print('devuelvo None')   
         else:
             return limite 
-        
+
+
 def magnet_street_intersection(mousePosition,intersectionList):
         #if len(self.__land.intercetion)>0:
             b=[]

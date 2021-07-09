@@ -29,28 +29,6 @@ class Land(metaclass=SingletonMeta):
             self.__streetList[len(self.__streetList)-1].end=positionTwo
             self.__streetList[len(self.__streetList)-1].lanes=lanes
     
-    # def intersect_point(self):
-    #     #self.__intersections=[]
-    #     #b=[]
-    #     for x in range(len(self.__streetList)):
-    #         streetX=self.__streetList[x] 
-    #         for y in range(x+1,len(self.__streetList)):
-    #             streetY=self.__streetList[y]
-    #             for laneX in streetX.laneList:
-    #                 for laneY in streetY.laneList:
-    #                     a=getIntersectPoint(laneX.begining,laneX.end,laneY.begining,laneY.end)
-    #                     if a!=None:
-    #                         intersection=Intersection(a,self.__streetList)
-    #                         agregar=True
-    #                         if len(laneX.intersectionList)>0:
-    #                             for inter in laneX.intersectionList:
-    #                                 if intersection==inter:
-    #                                     agregar=False
-    #                         if agregar==True:
-    #                             laneX.add_intersection(intersection)
-    #                             laneY.add_intersection(intersection)
-                
-                    
                 
     def get_intersections(self):                   
         intersectionList=[]
@@ -61,6 +39,7 @@ class Land(metaclass=SingletonMeta):
                     for intesection in lane.intersectionList:
                         if intesection not in intersectionList:
                             intersectionList.append(intesection)
+                        print('the intesection', lane.intersectionList.index(intesection),'have',len(intesection.posiblesDirection), 'way outs')
                         
         if len(intersectionList)==0:
             print('there is no intersections')

@@ -145,7 +145,7 @@ class Lane (pygame.sprite.Sprite):
                 
                 repeat = False   
                 for intersection in self.__intersectionList:
-                    if list(map(int,a)) == list(map(int,intersection.position)): #conviero los elementos del vector en int
+                    if module(array(a)-array(intersection.position))<self.widht: # repeat if the distance between intersection is less than lane widht
                         if lane not in (intersection.posiblesDirection + intersection.inputLanes):
                             intersection.update(lane)
                         repeat=True
@@ -230,22 +230,25 @@ class Intersection:
           
     def set_inputs_lanes(self,lane):
         if lane not in (self.__laneListIn + self.__laneListOut):
-            if list(map(int,lane.end))==list(map(int,self.__position)):
+            if pointOnACircle (lane.end,self.__position,3)!=None:
                 self.__laneListIn.append(lane)
                 return True
         else:
             print("lane is already in current intersection")
-        
+            return False
 
     def set_ouputs_lanes(self,lane:Lane):
         #print('finding posibles outs')
         if lane not in (self.__laneListIn + self.__laneListOut):
-            if list(map(int,lane.end))!=list(map(int,self.__position)):
+            
+            if pointOnACircle (lane.end,self.__position,3)==None:
                 self.__laneListOut.append(lane)
                 return True
+            else:
+                return False
         else:
             print("lane is already in current intersection")
-        
+            return False
 
       
 
